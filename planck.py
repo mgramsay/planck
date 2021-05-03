@@ -4,6 +4,8 @@ import numpy as np
 import scipy.constants as sc
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
+from PIL import Image
+import glob
 
 def planck(wavelength, temperature):
     intensity = np.zeros(len(wavelength))
@@ -100,3 +102,18 @@ for temp in temperatures_rev:
     plt.savefig('plots/planck_{:04d}.png'.format(n), format='png')
     plt.close(fig)
     n += 1
+
+frames = []
+for n in range(len(temperatures)):
+    filename = 'plots/planck_{:04d}.png'.format(n+1)
+    new_frame = Image.open(filename)
+    frames.append(new_frame)
+for n in range(len(temperatures_rev)):
+    filename = 'plots/planck_{:04d}.png'.format(n+1+len(temperatures))
+    new_frame = Image.open(filename)
+    frames.append(new_frame)
+
+frames[0].save("star.gif", format="GIF",
+               append_images=frames[1:],
+               save_all=True,
+               duration=len(frames), loop=0)
